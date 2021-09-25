@@ -1,0 +1,26 @@
+{
+    "name": "suggstr",
+    "version": "1.0.0",
+    "description": "Let all people suggest songs for the queue in Spotify",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DropMania/suggstr.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/DropMania/suggstr/issues"
+    },
+    "homepage": "https://github.com/DropMania/suggstr#readme",
+    "dependencies": {
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "node-fetch": "^3.0.0"
+    }
+}
