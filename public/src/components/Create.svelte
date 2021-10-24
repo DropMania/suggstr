@@ -6,6 +6,7 @@
     let urlParams = new URLSearchParams(window.location.hash.split('?')[1])
     let partyId = ''
     let token = urlParams.get('token')
+
     let formData = {
         name: '',
         time: '',
@@ -15,19 +16,34 @@
     let printing = false
     let submitted = false
     async function submit() {
-        let fomattedTime = timestring(formData.time)
+        let fomattedTime
+        try {
+            fomattedTime = timestring(formData.time)
+        } catch (e) {
+            return
+        }
+        if (!formData.name || !formData.time) {
+            return
+        }
+        if (!formData.timeout) {
+            formData.timeout = 10
+        }
         let response = await fetch('/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ ...formData, time: fomattedTime })
+            body: JSON.stringify({
+                ...formData,
+                time: Number(new Date()) + fomattedTime
+            })
         })
         let data = await response.json()
         partyId = data.partyId
         submitted = true
     }
     function print() {
+        location.hash = '#/create'
         printing = true
         setTimeout(() => {
             window.print()
@@ -39,20 +55,32 @@
 {#if !submitted}
     <div class="d-flex justify-center container flex-column mt-16">
         <TextField
-            hint="Enter a name for yor party"
+            validateOnBlur={true}
             bind:value={formData.name}
             class="mb-5"
-        />
+            rules={[(v) => !!v || 'Name is required']}>Party name</TextField
+        >
         <TextField
-            hint="How long should the party last"
-            placeholer="1d / 2h / 4m"
+            placeholder="e.g 1d 2h 4m"
             bind:value={formData.time}
             class="mb-5"
-        />
+            rules={[
+                (value) => !!value || 'Time is required',
+                (value) => {
+                    try {
+                        timestring(value)
+                        return false
+                    } catch (e) {
+                        return 'No valid Time'
+                    }
+                }
+            ]}>Party time</TextField
+        >
         <TextField
-            hint="Submission Timeout (m)"
+            hint="How often can Guests submit a Song (m)"
             bind:value={formData.timeout}
             class="mb-5"
+            placeholder="10"
         />
         <Button class="primary-color" on:click={submit}>Create</Button>
     </div>

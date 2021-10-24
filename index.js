@@ -88,6 +88,11 @@ app.get('/addSong', async (req, res) => {
     let data = await api.addToQueue(uri)
     res.json(data)
 })
-app.listen(8000, () => {
+app.get('/exists', async (req, res) => {
+    let { p } = req.query
+    let partyData = await party.findOne({ partyId: p })
+    res.json(!!partyData)
+})
+app.listen(process.env.PORT || 8000, () => {
     console.log('Example app listening on port 8000!')
 })
